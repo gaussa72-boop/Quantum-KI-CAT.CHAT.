@@ -22,8 +22,10 @@ def _sec_headers(response):
     response.headers.setdefault("X-Content-Type-Options","nosniff");response.headers.setdefault("X-Frame-Options","DENY");response.headers.setdefault("Referrer-Policy","strict-origin-when-cross-origin");response.headers.setdefault("Permissions-Policy","camera=(), microphone=(), geolocation=()");response.headers.setdefault("Cross-Origin-Opener-Policy","same-origin");response.headers.setdefault("Strict-Transport-Security","max-age=31536000; includeSubDomains");response.headers.pop("Server",None);return response
 app.secret_key = os.getenv("SECRET_KEY", "dev-only-change-me")
 api_key = os.getenv("OPENAI_API_KEY")
+OPENROUTER_API_KEY=os.getenv("OPENROUTER_API_KEY","").strip()
+router_client=OpenAI(api_key=OPENROUTER_API_KEY,base_url="https://openrouter.ai/api/v1") if OPENROUTER_API_KEY else None
 client = OpenAI(api_key=api_key) if api_key else None
-MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+MODEL = os.getenv("OPENAI_MODEL", "openai/gpt-5.6-luna")
 
 
 def get_db():
@@ -49,7 +51,7 @@ def health():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json(silent=True) or {}
-    user_msg = (data.get("message") or "").strip()
+    user_msg = (data.get("message") or "").strip()\n    selected_model = (data.get("model") or MODEL).strip()
     assistant_name = (data.get("assistant") or "Quantum Cat").strip()
     if not user_msg:
         return jsonify({"error": "message is required"}), 400
@@ -57,8 +59,8 @@ def chat():
         reply = "OpenAI ist nicht konfiguriert. Setze OPENAI_API_KEY in der Umgebung."
     else:
         try:
-            response = client.chat.completions.create(
-                model=MODEL,
+            response = (router_client if (router_client and selected_model) else client).chat.completions.create(
+                model=selected_model,
                 messages=[
                     {"role": "system", "content": f"Du bist {assistant_name}, eine hochentwickelte Sci-Fi-KI."},
                     {"role": "user", "content": user_msg},
