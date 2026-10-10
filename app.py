@@ -56,8 +56,8 @@ def chat():
     assistant_name = (data.get("assistant") or "Quantum Cat").strip()
     if not user_msg:
         return jsonify({"error": "message is required"}), 400
-    if client is None:
-        reply = "OpenAI ist nicht konfiguriert. Setze OPENAI_API_KEY in der Umgebung."
+    if client is None and router_client is None:
+        reply = "OPENAI_API_KEY oder OPENROUTER_API_KEY ist nicht konfiguriert."
     else:
         try:
             response = (router_client if (router_client and selected_model) else client).chat.completions.create(
