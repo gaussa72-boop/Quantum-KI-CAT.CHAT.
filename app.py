@@ -51,7 +51,8 @@ def health():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json(silent=True) or {}
-    user_msg = (data.get("message") or "").strip()\n    selected_model = (data.get("model") or MODEL).strip()
+    user_msg = (data.get("message") or "").strip()
+    selected_model = (data.get("model") or MODEL).strip()
     assistant_name = (data.get("assistant") or "Quantum Cat").strip()
     if not user_msg:
         return jsonify({"error": "message is required"}), 400
