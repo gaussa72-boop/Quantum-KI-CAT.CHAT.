@@ -34,7 +34,20 @@ img{max-width:100%;height:auto}
 @media(max-width:760px){header,.site-header,.nav{flex-wrap:wrap}.container,.content,.main{max-width:100%;padding-left:14px!important;padding-right:14px!important}.product-grid,.products-grid,.grid-products{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:440px){.product-grid,.products-grid,.grid-products{grid-template-columns:1fr!important}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
-</style></head>
+</style>
+<style id="ultima-visual-performance">
+:root{--u-cyan:#8debf0;--u-violet:#9b8cff}
+html{scroll-behavior:smooth}body{overflow-x:hidden!important;overflow-y:auto;min-height:100dvh;background:radial-gradient(ellipse at 50% -20%,rgba(0,255,255,.12),transparent 55%),#02070b}
+.app-container{min-height:100dvh;height:auto}
+.main-content{min-width:0;padding:22px;gap:12px}
+.ai-avatar{width:min(300px,42vw);height:auto;aspect-ratio:1;object-fit:cover}
+.chat-box{width:min(600px,100%);box-sizing:border-box;backdrop-filter:blur(16px)}
+#messages{overflow-wrap:anywhere}
+input:focus,button:focus-visible{outline:2px solid var(--u-cyan);outline-offset:3px}
+@media(max-width:700px){.app-container{flex-direction:column}.sidebar{width:100%;height:auto;max-height:96px;flex-direction:row;justify-content:flex-start;padding:10px;overflow-x:auto;overflow-y:hidden}.nav-item{flex:0 0 44px;width:44px;height:44px}.main-content{padding:16px 12px;justify-content:flex-start}.ai-display{margin:10px 0}.ai-avatar{width:min(170px,42vw)}.chat-box{width:100%;padding:12px}.input-area{flex-wrap:wrap}.input-area input{min-width:0;width:100%}.input-area button{min-height:42px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
 <body>
     <canvas id="canvas"></canvas>
     <div class="app-container">
