@@ -154,5 +154,9 @@ const label=(x.provider==='openrouter'?'OpenRouter':'OpenAI')+' · '+x.model;
 const host=document.querySelector('.top')||document.querySelector('.topbar')||document.querySelector('header');
 if(host){const el=document.createElement('span');el.className='model-status';el.textContent=x.openai_configured?label:'KI-API nicht konfiguriert';host.appendChild(el)}
 }).catch(()=>{});
-</script></body>
+</script>
+<!-- ULTIMA Membership & Credits -->
+<script src="https://ultima-membership-api.onrender.com/membership-widget.js"></script>
+<script>(function(){var sites={"quantum-ki-cat-chat.onrender.com":["quantum-ki-cat-chat","Quantum KI CAT Chat"]};var entry=sites[location.hostname];if(entry&&window.UltimaMembership)window.UltimaMembership.init({siteSlug:entry[0],brand:entry[1]});})();</script>
+</body>
 </html>
