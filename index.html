@@ -92,13 +92,15 @@ img{max-width:100%;height:auto}
             document.documentElement.style.setProperty('--glow', colors[index % colors.length]);
         }
 
+        function appendChatMessage(className, label, value) { const node=document.createElement('div'); node.className=className; node.textContent=label+': '+String(value ?? ''); const target=document.getElementById('messages'); target.appendChild(node); target.scrollTop=target.scrollHeight; }
+
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const box = document.getElementById('messages');
             if (!input.value) return;
 
             const userText = input.value;
-            box.innerHTML += `<div class="msg-u">DU: ${userText}</div>`;
+            appendChatMessage('msg-u','DU',userText);
             input.value = '';
 
             try {
@@ -108,10 +110,10 @@ img{max-width:100%;height:auto}
                     body: JSON.stringify({message: userText, assistant: activeAI.name})
                 });
                 const data = await res.json();
-                box.innerHTML += `<div class="msg-a">${activeAI.name}: ${data.reply}</div>`;
+                appendChatMessage('msg-a',activeAI.name,data.reply);
                 box.scrollTop = box.scrollHeight;
             } catch (e) {
-                box.innerHTML += `<div class="msg-a">SYSTEMFEHLER: Verbindung unterbrochen.</div>`;
+                appendChatMessage('msg-a','SYSTEMFEHLER','Verbindung unterbrochen.');
             }
         }
 
