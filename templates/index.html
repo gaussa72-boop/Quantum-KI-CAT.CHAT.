@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>ULTRA KI PRO V2 - MULTIVERSE</title>
+    <style>
+        :root { --glow: #00ffff; --dark: #020202; }
+        body { margin: 0; background: var(--dark); color: white; font-family: 'Consolas', monospace; overflow: hidden; }
+        #canvas { position: absolute; z-index: 1; top: 0; left: 0; }
+        .app-container { position: relative; z-index: 10; display: flex; height: 100vh; }
+        .sidebar { width: 80px; background: rgba(0, 0, 0, 0.8); border-right: 1px solid var(--glow); display: flex; flex-direction: column; align-items: center; padding-top: 20px; gap: 15px; overflow-y: auto; }
+        .nav-item { width: 50px; height: 50px; border-radius: 50%; border: 1px solid #444; cursor: pointer; background-size: cover; transition: 0.3s; }
+        .nav-item:hover { border-color: var(--glow); box-shadow: 0 0 10px var(--glow); }
+        .nav-item.active { border: 2px solid var(--glow); box-shadow: 0 0 20px var(--glow); }
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ai-display { text-align: center; margin-bottom: 20px; }
+        .ai-avatar { width: 300px; height: 300px; border-radius: 50%; border: 2px solid var(--glow); box-shadow: 0 0 40px rgba(0, 255, 255, 0.2); }
+        .chat-box { width: 600px; background: rgba(10, 10, 10, 0.9); border: 1px solid var(--glow); border-radius: 10px; padding: 20px; }
+        #messages { height: 250px; overflow-y: auto; margin-bottom: 15px; font-size: 0.9em; border-bottom: 1px solid #222; }
+        .input-area { display: flex; gap: 10px; }
+        input { flex: 1; background: #000; border: 1px solid #333; color: var(--glow); padding: 10px; border-radius: 5px; outline: none; }
+        button { background: var(--glow); color: black; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        .msg-u { color: #fff; margin-bottom: 5px; }
+        .msg-a { color: var(--glow); margin-bottom: 10px; text-shadow: 0 0 5px var(--glow); }
+    </style>
+<style id="ultima-complete-2026">/* ULTIMA COMPLETE 2026 — responsive polish */
+:root{--ultima-line:rgba(255,255,255,.14);--ultima-cyan:#8debf0;--ultima-gold:#d6b578}
+html{scroll-behavior:smooth}body{overflow-x:hidden!important}
+button,a,.btn{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+button:hover,.btn:hover{transform:translateY(-1px)}
+input,textarea,select{max-width:100%;outline:none}
+input:focus,textarea:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--ultima-cyan)!important;outline-offset:3px}
+img{max-width:100%;height:auto}
+@media(max-width:760px){header,.site-header,.nav{flex-wrap:wrap}.container,.content,.main{max-width:100%;padding-left:14px!important;padding-right:14px!important}.product-grid,.products-grid,.grid-products{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:440px){.product-grid,.products-grid,.grid-products{grid-template-columns:1fr!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style></head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div class="app-container">
+        <div class="sidebar" id="sidebar"></div>
+        <div class="main-content">
+            <div class="ai-display">
+                <h1 id="ai-name">SINGULOS</h1>
+                <img id="ai-img" class="ai-avatar" src="" alt="AI">
+            </div>
+            <div class="chat-box">
+                <div id="messages"></div>
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="Quantenbefehl senden...">
+                    <button onclick="sendMessage()">SEND</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const agents = [
+            {name: "SINGULOS", img: "/static/assets/485162690...n.jpg"},
+            {name: "IONOS-7", img: "/static/assets/485757034...n.jpg"},
+            {name: "AUTOKRYPT", img: "/static/assets/485767621...n.jpg"},
+            {name: "NEBULA", img: "/static/assets/485859062...n.jpg"},
+            {name: "VOID", img: "/static/assets/485882728...n.jpg"},
+            {name: "ZENITH", img: "/static/assets/486018216...n.jpg"},
+            {name: "ORION", img: "/static/assets/486038969...n.jpg"},
+            {name: "QUANTUM", img: "/static/assets/491211109...n.jpg"},
+            {name: "CHRONOS", img: "/static/assets/491512015...n.jpg"},
+            {name: "ULTRA", img: "/static/assets/491856978...n.jpg"}
+        ];
+
+        let activeAI = agents[0];
+
+        function initSidebar() {
+            const sb = document.getElementById('sidebar');
+            agents.forEach((a, index) => {
+                const div = document.createElement('div');
+                div.className = 'nav-item' + (index === 0 ? ' active' : '');
+                div.style.backgroundImage = `url('${a.img}')`;
+                div.onclick = () => selectAI(index, div);
+                sb.appendChild(div);
+            });
+            selectAI(0);
+        }
+
+        function selectAI(index, el) {
+            activeAI = agents[index];
+            document.getElementById('ai-name').innerText = activeAI.name;
+            document.getElementById('ai-img').src = activeAI.img;
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            if (el) el.classList.add('active');
+            const colors = ['#00ffff', '#f39c12', '#ff00ff', '#00ff00', '#ff0000'];
+            document.documentElement.style.setProperty('--glow', colors[index % colors.length]);
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const box = document.getElementById('messages');
+            if (!input.value) return;
+
+            const userText = input.value;
+            box.innerHTML += `<div class="msg-u">DU: ${userText}</div>`;
+            input.value = '';
+
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: userText, assistant: activeAI.name})
+                });
+                const data = await res.json();
+                box.innerHTML += `<div class="msg-a">${activeAI.name}: ${data.reply}</div>`;
+                box.scrollTop = box.scrollHeight;
+            } catch (e) {
+                box.innerHTML += `<div class="msg-a">SYSTEMFEHLER: Verbindung unterbrochen.</div>`;
+            }
+        }
+
+        // Hintergrund Animation
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        function draw() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            ctx.strokeStyle = "rgba(100, 100, 100, 0.2)";
+            const time = Date.now() * 0.001;
+            for (let i = 0; i < 8; i++) {
+                ctx.beginPath();
+                ctx.arc(window.innerWidth / 2 + Math.cos(time + i) * 30, window.innerHeight / 2 + Math.sin(time + i) * 30, 200, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            requestAnimationFrame(draw);
+        }
+        initSidebar();
+        draw();
+    </script>
+<script>(function(){const M=[["openai/gpt-5.6-luna","OpenAI · GPT-5.6 Luna"],["anthropic/claude-sonnet-5","Anthropic · Claude Sonnet 5"],["google/gemini-3.8-flash","Google · Gemini 3.8 Flash"],["x-ai/grok-4.7","xAI · Grok 4.7"],["deepseek/deepseek-v4.1-flash","DeepSeek · V4.1 Flash"],["z-ai/glm-5.3-flashx","Z.ai · GLM 5.3 FlashX"],["qwen/qwen3.7-plus-20260602","Qwen · Qwen3.7 Plus"],["moonshotai/kimi-k3","Moonshot · Kimi K3"],["minimax/minimax-m3","MiniMax · M3"],["mistralai/mistral-small-2603","Mistral · Small 4"]];const s=document.createElement('select');s.id='ai-model-select';s.setAttribute('aria-label','KI-Modell wählen');s.style.cssText='background:#15131f;color:#fff;border:1px solid #8b5cf6;border-radius:999px;padding:7px 10px;font:inherit;max-width:230px';M.forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;s.appendChild(o)});const x=localStorage.getItem('ai_model');if(x&&M.some(m=>m[0]===x))s.value=x;s.onchange=()=>localStorage.setItem('ai_model',s.value);(document.querySelector('.top')||document.querySelector('.topbar')||document.querySelector('header')||document.body).appendChild(s)})()</script></body>
+</html>
