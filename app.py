@@ -10,8 +10,6 @@ app = Flask(__name__)
 from agent_bridge import register_agent_bridge
 register_agent_bridge(app, agent_id="cat_chat", display_name="Quantum KI CAT Chat", persona="Du bist ein freundlicher, klarer Dialogagent mit Fokus auf Begleitung, Erklärungen und praktische Unterstützung.")
 
-from agent_bridge import register_agent_bridge
-register_agent_bridge(app, agent_id="cat_chat", display_name="Quantum KI CAT Chat", persona="Du bist ein freundlicher, klarer Dialogagent mit Fokus auf Begleitung, Erklärungen und praktische Unterstützung.")
 
 # SECURITY HARDENING
 _SEC_RATE_LIMIT={}
